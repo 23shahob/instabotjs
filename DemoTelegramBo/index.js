@@ -18,17 +18,15 @@ const token = process.env.BOT;
 
 const bot = new TelegramBot(token, { polling: true });
 
-// Regular expression to match Instagram links
-const instagramRegex = /https?:\/\/(www\.)?instagram\.com\/[a-zA-Z0-9_]+/i;
-
+// Bot checks for instagram.com anywhere in the text
 bot.on("message", async (msg) => {
     const chatId = msg.chat.id;
     const userInput = msg.text;
     const msg_id = msg.message_id;
 
-    // Check if the message contains an Instagram link
-    if (instagramRegex.test(userInput)) {
-        // If the message contains an Instagram link, delete it
+    // Check if the message includes 'instagram.com'
+    if (userInput && userInput.includes("instagram.com")) {
+        // If the message contains 'instagram.com', delete it
         try {
             await bot.deleteMessage(chatId, msg_id);
             console.log("Instagram link deleted.");
