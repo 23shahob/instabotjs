@@ -1,44 +1,31 @@
-require('dotenv').config(); // Load .env file
-
 const TelegramBot = require("node-telegram-bot-api");
-const express = require("express");
-const app = express();
-
-app.get("/", (req, res) => {
-    res.send("Bot is alive");
-});
-
-const port = 3000;
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-});
-
-// Get the token securely from the .env file
-const token = process.env.BOT;
-
-const bot = new TelegramBot(token, { polling: true });
-
-// Bot checks for instagram.com anywhere in the text
-bot.on("message", async (msg) => {
-    const chatId = msg.chat.id;
-    const userInput = msg.text;
-    const msg_id = msg.message_id;
-
-    // Check if the message includes 'instagram.com'
-    if (userInput && userInput.includes("instagram.com")) {
-        // If the message contains 'instagram.com', delete it
-        try {
-            await bot.deleteMessage(chatId, msg_id);
-            console.log("Instagram link deleted.");
-        } catch (error) {
-            console.error("Error deleting message:", error);
-        }
-    } else {
-        // If no Instagram link, reply with the user's message
-        await bot.sendMessage(chatId, userInput, {
-            reply_to_message_id: msg_id,
+// Replace with your own bot token
+const TOKEN = "8006510624:AAFkMuBemJ3TQUE5XwwJ3yv-KZUM1Ll2BbQ";
+// Create a bot instance with polling
+const bot = new TelegramBot(TOKEN, { polling: true });
+// Handle incoming messages
+bot.on("message", (msg) => {
+  // Get the text message from the user
+  const userMessage = msg.text;
+  if (userMessage) {
+    // Check if the message contains an Instagram link
+    if (userMessage.includes("instagram.com")) {
+      // Delete the message
+      bot
+        .deleteMessage(msg.chat.id, msg.message_id)
+        .then(() => {
+          // Send a warning to the user
+          bot.sendMessage(
+            msg.chat.id,
+            "Instagramdan link tashlash taqiqlangan!"
+          );
+        })
+        .catch((err) => {
+          console.error("Error deleting message:", err);
         });
     }
+  } else {
+    console.log("Received an update without a message or text.");
+  }
 });
-
-module.exports = app;
+console.log("Bot is running...");
