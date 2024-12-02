@@ -21,7 +21,7 @@ bot.on("message", (msg) => {
           // Send a warning to the user
           bot.sendMessage(
             msg.chat.id,
-            "Instagramdan link tashlash taqiqlangan!"
+            "Instagramdan link tashlash taqiqlangan!🗿"
           );
         })
         .catch((err) => {
